@@ -26,6 +26,8 @@ package OverJADE;
 import jade.core.Agent;
 import java.util.ArrayList;
 
+import jade.core.AID;
+
 public class PlayerAgent extends Agent {
 	
 	public enum Role {
@@ -39,7 +41,7 @@ public class PlayerAgent extends Agent {
 	public Role secondRole;
 	public Role lastRole;
 	
-	public List<AID> friends;
+	public ArrayList<AID> friends;
 	
 	public boolean isActive;
 	
