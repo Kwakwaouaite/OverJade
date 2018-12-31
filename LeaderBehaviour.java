@@ -18,33 +18,39 @@ public class LeaderBehaviour extends CyclicBehaviour  {
 	}
 
 	public void action() {
-		while (true) {
-			// do something
-			ACLMessage msg = myAgent.receive();
+		ACLMessage msg = myAgent.receive();
 
-            if (msg != null) {
-                if (msg.getPerformative() == ACLMessage.REQUEST) {
-                    ACLMessage reply = msg.createReply();
-                    reply.setPerformative(ACLMessage.PROPOSE);
-                    Group.Role toPropose = myGroup.tryJoinRole(Group.Role.valueOf(msg.getContent()));
-                    reply.setContent(toPropose.toString());
-                    myAgent.send(reply);
-                }
-                else if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+        if (msg != null) {
+            if (msg.getPerformative() == ACLMessage.REQUEST) {
+                ACLMessage reply = msg.createReply();
+                reply.setPerformative(ACLMessage.PROPOSE);
+                Group.Role toPropose = myGroup.tryJoinRole(Group.Role.valueOf(msg.getContent()));
+                reply.setContent(toPropose.toString());
+                myAgent.send(reply);
+            }
+            else if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
 
-                }
-                else if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL){
+            	ACLMessage reply = msg.createReply();
 
-                }
-                else {
-                    System.out.println( "Leader received unexpected message: " + msg );
-                }
+            	if (myGroup.addPlayer(msg.getSender(), Group.Role.valueOf(msg.getContent()))) {
+            		reply.setPerformative(ACLMessage.CONFIRM);
+            	} else {
+            		reply.setPerformative(ACLMessage.DISCONFIRM);
+            	}
+                myAgent.send(reply);
+
+            }
+            else if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL){
+
             }
             else {
-                // if no message is arrived, block the behaviour
-                block();
+                System.out.println( "Leader received unexpected message: " + msg );
             }
-		}
+        }
+        else {
+            // if no message is arrived, block the behaviour
+            block();
+        }
 	}
 	
 	/*

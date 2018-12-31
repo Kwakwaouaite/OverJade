@@ -71,6 +71,53 @@ public class Group {
 		return true;
 	}
 
+	// Try to add the player to the role, return if the action is done or not
+	boolean addPlayer(AID player, Role role){
+		switch (role) {
+			case HEALER:
+				if (firstHealer == null)
+				{
+					firstHealer = player;
+					return true;
+				}
+				if (secondHealer == null)
+				{
+					secondHealer = player;
+					return true;
+				}
+				break;
+
+			case TANK:
+				if (firstTank == null)
+				{
+					firstTank = player;
+					return true;
+				}
+				if (secondTank == null)
+				{
+					secondTank = player;
+					return true;
+				}
+				break;
+
+			case DPS:
+				if (firstDPS == null)
+				{
+					firstDPS = player;
+					return true;
+				}
+				if (secondDPS == null)
+				{
+					secondDPS = player;
+					return true;
+				}
+				break;
+			}
+
+			return false;
+	}
+
+
 	Role whatNeeded(){
 		if (isHealerNeeded()){
 			return Role.HEALER;
