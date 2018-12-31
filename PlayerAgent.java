@@ -30,16 +30,12 @@ import jade.core.AID;
 
 public class PlayerAgent extends Agent {
 	
-	public enum Role {
-		DPS,
-		TANK,
-		HEALER
-	}
+	
 	
 	public String nickname; // Attribut nom
-	public Role preferedRole;
-	public Role secondRole;
-	public Role lastRole;
+	public Group.Role preferedRole;
+	public Group.Role secondRole;
+	public Group.Role lastRole;
 	
 	public ArrayList<AID> friends;
 	
@@ -48,7 +44,7 @@ public class PlayerAgent extends Agent {
 	public int impatienceRate;
 	
 	protected void setup() {
-		
+		addBehaviour( new LeaderBehaviour(this));
 	}
 	
 }
