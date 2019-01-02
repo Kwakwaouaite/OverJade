@@ -1,29 +1,15 @@
 package OverJADE;
 
-import jade.core.behaviours.CyclicBehaviour;
+
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.Agent;
+
 public class ImpatientBehaviour extends CyclicBehaviour  {
-    public enum Role {
-        DPS,
-        TANK,
-        HEALER
-    }
-
-    public String nickname; // Attribut nom
-    public Role preferedRole;
-    public Role secondRole;
-    public Role lastRole;
-
-    public ArrayList<AID> friends;
-
-    public boolean isActive;
-
-    public int impatienceRate;
 
     public PlayerAgent myAgent;
-    public Group myGroup;
 
     public boolean inParty = false;
 
@@ -31,7 +17,6 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
 
     public ImpatientBehaviour(PlayerAgent agent) {
         myAgent = agent;
-        myGroup = null;
     }
 
     public void action() {
@@ -42,7 +27,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         // connexion aux pages jaunes
         DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
-        sd.setType('party-finding');
+        sd.setType("party-finding");
         template.addServices(sd);
 
 
@@ -51,9 +36,10 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             potentialLeaders = new AID[result.length];
             for (int i = 0; i < result.length; ++i) {
                 //sellerAgents[i] = result[i].getName();
-                ACLMessage requestToJoin = new ACLMessage (ACLMessage.REQUEST)
-                requestToJoin.SetContent (preferedRole.toString());
+                ACLMessage requestToJoin = new ACLMessage (ACLMessage.REQUEST);
+                requestToJoin.SetContent (myAgent.preferedRole.toString());
                 requestToJoin.addReceiver(result[i].getName());
+                myAgent.send(requestToJoin);
             }
         }
         catch (FIPAException fe) {
@@ -61,9 +47,15 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         }
 
         ACLMessage answerFromLeader = myAgent.receive();
-        if (answerFromLeader != null) {
-            if (answerFromLeader.getPerformative() == ACLMessage.PROPOSE){
-
+        if (answerFromLeader != null && !inParty) {
+            if (answerFromLeader.getPerformative() == ACLMessage.PROPOSE &&
+            ACLMessage.GetContent() == myAgent.preferedRole.toString()){//on accepte l offre
+                ACLMessage acceptOffer = answerFromLeader.createReply();
+                acceptOffer.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                myAgent.send(acceptOffer);
+            }
+            else if (answerFromLeader.getPerformative() == ACLMessage.CONFIRM){
+                inParty = true;
             }
         }
     }
