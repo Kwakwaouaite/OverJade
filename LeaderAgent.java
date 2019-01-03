@@ -28,22 +28,11 @@ import java.util.ArrayList;
 
 import jade.core.AID;
 
-public class PlayerAgent extends Agent {
+public class LeaderAgent extends PlayerAgent {
 	
-	
-	
-	public String nickname; // Attribut nom
-	public Group.Role preferedRole;
-	public Group.Role secondRole;
-	public Group.Role lastRole;
-	
-	public ArrayList<AID> friends;
-	
-	public boolean isActive;
-	
-	public int impatienceRate;
 	
 	protected void setup() {
+		addBehaviour( new LeaderBehaviour(this));
 	}
 	
 }
