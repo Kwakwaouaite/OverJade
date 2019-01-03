@@ -50,22 +50,38 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         ACLMessage answerFromLeader = myAgent.receive();
         if (answerFromLeader != null && !inParty) {
             if (answerFromLeader.getPerformative() == ACLMessage.PROPOSE &&
-            answerFromLeader.getContent() == myAgent.preferedRole.toString()){//on accepte l offre
+            answerFromLeader.getContent() == ("\"" + myAgent.preferedRole.toString() + "\"")){//on accepte l offre
                 ACLMessage acceptOffer = answerFromLeader.createReply();
                 acceptOffer.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 myAgent.send(acceptOffer);
+                System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + answerFromLeader + " and accept");
             }
+
+            else if (answerFromLeader.getPerformative() == ACLMessage.PROPOSE &&
+                    answerFromLeader.getContent() != ("\"" + myAgent.preferedRole.toString() + "\"" )){
+                ACLMessage refuseOffer = answerFromLeader.createReply();
+                refuseOffer.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                refuseOffer.setContent(myAgent.preferedRole.toString());
+                myAgent.send(refuseOffer);
+                System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + answerFromLeader
+                        + " and refuse, expect " + myAgent.preferedRole.toString());
+            }
+
             else if (answerFromLeader.getPerformative() == ACLMessage.CONFIRM){
                 inParty = true;
+                System.out.println( "Impatient " + getAgent().getName().toString() + "received COMFIRM " + answerFromLeader );
             }
+
             else {
-                System.out.println( "Leader received unexpected message: " + answerFromLeader );
+                System.out.println( "Impatient " + getAgent().getName().toString() + "received unexpected message: " + answerFromLeader );
             }
+
         }
         else if (answerFromLeader != null && inParty) {
             ACLMessage refuseOffer = answerFromLeader.createReply();
             refuseOffer.setPerformative(ACLMessage.REJECT_PROPOSAL);
             myAgent.send(refuseOffer);
+            System.out.println( "Impatient " + getAgent().getName().toString() + " is already in a party and received unexpected message: " + answerFromLeader  );
         }
     }
 
