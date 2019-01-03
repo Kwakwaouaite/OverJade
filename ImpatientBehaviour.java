@@ -58,6 +58,14 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             else if (answerFromLeader.getPerformative() == ACLMessage.CONFIRM){
                 inParty = true;
             }
+            else {
+                System.out.println( "Leader received unexpected message: " + answerFromLeader );
+            }
+        }
+        else if (answerFromLeader != null && inParty) {
+            ACLMessage refuseOffer = answerFromLeader.createReply();
+            refuseOffer.setPerformative(ACLMessage.REJECT_PROPOSAL);
+            myAgent.send(refuseOffer);
         }
     }
 
