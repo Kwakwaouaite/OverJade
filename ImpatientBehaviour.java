@@ -1,11 +1,12 @@
 package OverJADE;
 
-
+import jade.core.AID;
+import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-
-import jade.core.behaviours.CyclicBehaviour;
-import jade.core.Agent;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 public class ImpatientBehaviour extends CyclicBehaviour  {
 
@@ -37,7 +38,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             for (int i = 0; i < result.length; ++i) {
                 //sellerAgents[i] = result[i].getName();
                 ACLMessage requestToJoin = new ACLMessage (ACLMessage.REQUEST);
-                requestToJoin.SetContent (myAgent.preferedRole.toString());
+                requestToJoin.setContent (myAgent.preferedRole.toString());
                 requestToJoin.addReceiver(result[i].getName());
                 myAgent.send(requestToJoin);
             }
@@ -49,7 +50,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         ACLMessage answerFromLeader = myAgent.receive();
         if (answerFromLeader != null && !inParty) {
             if (answerFromLeader.getPerformative() == ACLMessage.PROPOSE &&
-            ACLMessage.GetContent() == myAgent.preferedRole.toString()){//on accepte l offre
+            answerFromLeader.getContent() == myAgent.preferedRole.toString()){//on accepte l offre
                 ACLMessage acceptOffer = answerFromLeader.createReply();
                 acceptOffer.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 myAgent.send(acceptOffer);
