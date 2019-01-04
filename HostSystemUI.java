@@ -196,7 +196,7 @@ public class HostSystemUI
         // add a behaviour to the host to end the party
         m_owner.addBehaviour( new OneShotBehaviour() {
                                   public void action() {
-                                      ((HostSystem) myAgent).endParty();
+                                      ((HostSystem) myAgent).m_partyOver = true;
                                   }
                               } );
     }
