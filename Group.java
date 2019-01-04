@@ -132,22 +132,22 @@ public class Group {
 	}
 
 	void leave(AID aidLeaver){
-		if (firstHealer != null && aidLeaver == firstHealer){
+		if (firstHealer != null && aidLeaver.equals(firstHealer)){
 			firstHealer = null;
 		}
-		else if (secondHealer != null && aidLeaver == secondHealer){
+		else if (secondHealer != null && aidLeaver.equals(secondHealer){
 			secondHealer = null;
 		}
-		else if (firstDPS != null && aidLeaver == firstDPS){
+		else if (firstDPS != null && aidLeaver.equals(firstDPS)){
 			firstDPS = null;
 		}
-		else if (secondDPS != null && aidLeaver == secondDPS){
+		else if (secondDPS != null && aidLeaver.equals(secondDPS)){
 			secondDPS = null;
 		}
-		else if (firstTank != null && aidLeaver == firstTank){
+		else if (firstTank != null && aidLeaver.equals(firstTank)){
 			firstTank = null;
 		}
-		else if (secondTank != null && aidLeaver == secondTank){
+		else if (secondTank != null && aidLeaver.equals(secondTank)){
 			secondTank = null;
 		}
 	}

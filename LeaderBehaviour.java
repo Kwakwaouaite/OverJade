@@ -43,7 +43,11 @@ public class LeaderBehaviour extends CyclicBehaviour  {
             else if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL){
 
             }
-            else {
+            else if (msg.getPerformative() == ACLMessage.INFORM && msg.getContent().equals("QUIT")) {
+            	myGroup.leave(msg.getSender());
+            	System.out.println(msg.getSender() + " is quitting");
+            }
+            else{
                 System.out.println( "Leader received unexpected message: " + msg );
             }
         }
