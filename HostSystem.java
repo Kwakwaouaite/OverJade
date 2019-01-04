@@ -10,6 +10,7 @@ import jade.core.ProfileImpl;
 import jade.core.Profile;
 
 import jade.wrapper.PlatformController;
+import jade.wrapper.StaleProxyException;
 import jade.wrapper.AgentController;
 
 import jade.lang.acl.ACLMessage;
@@ -25,6 +26,7 @@ import jade.domain.FIPAException;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.text.NumberFormat;
 
 
@@ -38,15 +40,21 @@ import java.text.NumberFormat;
 public class HostSystem
     extends Agent
 {
+	
+	
     // Constants
     //////////////////////////////////
 
     public final static String GOODBYE = "GOODBYE";
+    public final static String HELLO = "HELLO";
+    public final static String JOINGROUP = "JOINGROUP";
+    public final static String LEAVEGROUP = "LEAVEGROUP";
 
     // Instance variables
     //////////////////////////////////
     protected JFrame m_frame = null;
-    protected Vector m_guestList = new Vector();    // invitees
+    protected Vector<AgentController> m_guestList = new Vector();    // invite
+    protected Map<AgentController, Boolean> m_guestListAgent = new HashMap<AgentController, Boolean>();
     protected int m_guestCount = 0;                 // arrivals
     protected int m_personInGroup = 0;
     protected int m_personConnected = 0;
@@ -57,6 +65,9 @@ public class HostSystem
     protected long m_startTime = 0L;
 
     Random rnd = new Random();
+
+    protected int timeCreationNewAgents = 10;
+    protected int index = 0;
 
 
     // Constructors
@@ -101,6 +112,64 @@ public class HostSystem
 
             // add the GUI
             setupUI();
+            
+            
+            // add a Behaviour to handle messages from guests
+            addBehaviour( new CyclicBehaviour( this ) {
+                            public void action() {
+                                ACLMessage msg = receive();
+
+                                if (msg != null) {
+                                    if (HELLO.equals( msg.getContent() )) {		//Un nouveau agent activé
+                                        // a guest has arrived
+                                    	m_personConnected++;
+                                        System.out.println( "Une nouvelle personne est connectée" );  
+                                        SwingUtilities.invokeLater( new Runnable() {
+                                            public void run() {
+                                                ((HostSystemUI) m_frame).lbl_numIntroductions.setText(Integer.toString(m_personConnected));
+                                            }
+                                        } );
+                                    }
+                                    
+                                    else if (GOODBYE.equals( msg.getContent() )){
+                                    	// a guest has leave
+                                    	m_personConnected--;
+                                        System.out.println( "Un agent est partis dans un groupe" ); 
+                                        SwingUtilities.invokeLater( new Runnable() {
+                                            public void run() {
+                                                ((HostSystemUI) m_frame).lbl_numIntroductions.setText(Integer.toString(m_personConnected));
+                                            }
+                                        } );
+                                	} 
+                                    
+                                    else if (JOINGROUP.equals( msg.getContent() )){
+                                    	// a guest has leave
+                                    	m_personInGroup++;
+                                        System.out.println( "Un agent a rejoint un groupe" ); 
+                                        SwingUtilities.invokeLater( new Runnable() {
+                                            public void run() {
+                                                ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected));
+                                            }
+                                        } );
+                                    }
+                                    
+                                    else if (JOINGROUP.equals( msg.getContent() )){
+                                    	// a guest has leave
+                                    	m_personInGroup--;
+                                        System.out.println( "Un agent a quitté un groupe" );   
+                                        SwingUtilities.invokeLater( new Runnable() {
+                                            public void run() {
+                                                ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected));
+                                            }
+                                        } );
+                                    }
+                                }
+                                else {
+                                    // if no message is arrived, block the behaviour
+                                    block();
+                                }
+                            }
+            			} );
         }
         catch (Exception e) {
             System.out.println( "Saw exception in HostAgent: " + e );
@@ -136,7 +205,7 @@ public class HostSystem
     protected void inviteGuests( int nGuests ) {
         // remove any old state
         m_guestList.clear();
-        m_guestCount = 0;
+        m_guestCount = nGuests;
         m_partyOver = false;
         m_personInGroup = 0;
         m_personConnected = 0;
@@ -159,11 +228,15 @@ public class HostSystem
 
                 if(nombre == 0) {
                     //crÃ©ation de l'agent
-                    //AgentController guest = container.createNewAgent(localName, "examples.party.GuestAgent", null);
-                }
+                    AgentController guest = container.createNewAgent(localName, "examples.party.GuestAgent", null);
+                
                        // keep the guest's ID on a local list
-                m_guestList.add( new AID(localName, AID.ISLOCALNAME) );
+                m_guestList.add(guest);
+                m_guestListAgent.put(guest, false);
+                }
             }
+
+            updateSystem();
         }
         catch (Exception e) {
             System.err.println( "Exception while adding guests: " + e );
@@ -194,6 +267,7 @@ public class HostSystem
         }
 
         m_guestList.clear();
+        m_guestListAgent.clear();
     }
 
 
@@ -217,6 +291,51 @@ public class HostSystem
         }
     }
 
+
+    /**
+    * Boucle d'activation des agents.
+    */
+    protected void updateSystem() {
+    	
+    	try {
+    		
+        while(!m_partyOver) {
+        	//sélection du nb de gens à inviter en même temps 
+        	
+        	int nombre = rnd.nextInt(20) + 10;
+        	
+        	for(int i = 0; i < nombre; i++) {
+        		
+        		index ++;
+        		if(index > m_guestCount) index = 0;
+        		
+        		AgentController guest = m_guestList.get(index);
+        		
+        		if( m_guestListAgent.get(guest) == false )
+        		{	//agent pas actif
+        			guest.start();
+        			m_guestListAgent.put(guest,true);
+        			
+        		} else {     //actif deja actif
+        			nombre++;
+        		}
+        	}
+        	
+        	TimeUnit.SECONDS.sleep(timeCreationNewAgents);
+        	
+        }
+
+        endParty();
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StaleProxyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    }
 }
 
 
