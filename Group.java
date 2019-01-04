@@ -135,7 +135,7 @@ public class Group {
 		if (firstHealer != null && aidLeaver.equals(firstHealer)){
 			firstHealer = null;
 		}
-		else if (secondHealer != null && aidLeaver.equals(secondHealer){
+		else if (secondHealer != null && aidLeaver.equals(secondHealer)){
 			secondHealer = null;
 		}
 		else if (firstDPS != null && aidLeaver.equals(firstDPS)){
