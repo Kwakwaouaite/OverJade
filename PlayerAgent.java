@@ -39,7 +39,7 @@ public class PlayerAgent extends Agent {
 	
 	public ArrayList<AID> friends;
 
-	public AID leader;
+	public Group group;
 	
 	public boolean isActive;
 	

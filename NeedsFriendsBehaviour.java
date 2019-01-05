@@ -21,7 +21,8 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
 
     public AID[] friendsLeader;
 
-	public boolean inGroup; 
+	public boolean inGroup;
+    public Group myGroup; 
 
     public NeedsFriendsBehaviour(PlayerAgent agent) {
         friendsLeader = new AID[myAgent.friends.size()];
@@ -36,24 +37,23 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
 
     public void SendRequestToFriend(AID friendAID) {
         ACLMessage requestToJoin = new ACLMessage (ACLMessage.REQUEST);
-        requestToJoin.setContent (myAgent.preferedRole.toString());
+        requestToJoin.setContent(myAgent.preferedRole.toString());
         requestToJoin.addReceiver(friendAID);
         myAgent.send(requestToJoin);       
     }
-
-    /*
+    
     public void SendLeaderAID(ACLMessage message) {
         ACLMessage answer = message.createReply();
-        answer.addReplyTo(myAgent.leader);
+        answer.addReplyTo(myAgent.group.leader);
         answer.setPerformative(ACLMessage.INFORM);
-        answer.setContent();
+        answer.setContent("You'll reply to my leader");
         myAgent.send(answer);       
     }
-    */
-
-    public void AcceptProposal(ACLMessage message) {
+    
+    public void AcceptProposal(ACLMessage message, Group.Role roleAsked) {
         ACLMessage acceptOffer = message.createReply();
         acceptOffer.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+        acceptOffer.setContent(roleAsked.toString());
         myAgent.send(acceptOffer);
     }
 
@@ -63,18 +63,11 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
         myAgent.send(refuseOffer);
     }
 
-    public void AnswerOfferByAskingAnotherJob(ACLMessage message) {
+    public void AnswerByAskingPreferedJob(ACLMessage message) {
         ACLMessage refuseOffer = message.createReply();
         refuseOffer.setPerformative(ACLMessage.REQUEST);
         refuseOffer.setContent(myAgent.preferedRole.toString());
         myAgent.send(refuseOffer);
-    }
-
-    public void SendMessageToFriendsLeader(ACLMessage message) {
-        ACLMessage request = message.createReply();
-        request.setPerformative(ACLMessage.REQUEST);
-        request.setContent (myAgent.preferedRole.toString());
-        myAgent.send(request);
     }
 
     public void AddFriendsLeaderToList(ACLMessage messageReceivedFromFriendWithReplyToLeader){
@@ -91,7 +84,6 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
         }
     }
                     
-
     public void action() {
 
     	//send request to friends
@@ -100,68 +92,70 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
         }
 
         MessageTemplate temp = MessageTemplate.MatchReceiver(myfriends);
+        MessageTemplate temp2 = MessageTemplate.MatchReceiver(friendsLeader);
         
+        MessageTemplate tempFinal = MessageTemplate.or(temp, temp2);
+
         //reception of messages
-        ACLMessage messageFromFriends = myAgent.receive(temp);
-        if (messageFromFriends != null && !inGroup) {
+        ACLMessage messageFriendly = myAgent.receive(tempFinal);
+        if (messageFriendly != null && !inGroup) {
 
-            boolean offerPreferedJob = messageFromFriends.getPerformative() == ACLMessage.PROPOSE && messageFromFriends.getContent().equals(("\"" + myAgent.preferedRole.toString() + "\""));
-            boolean answerFromFriendNotPreferedJob = messageFromFriends.getPerformative() == ACLMessage.PROPOSE && messageFromFriends.getContent() != ("\"" + myAgent.preferedRole.toString() + "\"" );
-
-            if (offerPreferedJob){//on accepte l offre
-                AcceptProposal(messageFromFriends);
-            }
-
-            else if (messageFromFriends.getPerformative() == ACLMessage.CONFIRM){
+            if (messageFriendly.getPerformative() == ACLMessage.PROPOSE) {
+                AcceptProposal(messageFriendly, Group.Role.valueOf(messageFriendly.getContent()));
                 inGroup = true;
-                myAgent.leader = messageFromFriends.getSender();
             }
 
-            else if (answerFromFriendNotPreferedJob){
-                AnswerOfferByAskingAnotherJob(messageFromFriends);
+            else if (messageFriendly.getPerformative() == ACLMessage.CONFIRM) {
+                myAgent.group.leader = messageFriendly.getSender();
             }
 
-            else if (messageFromFriends.getPerformative() == ACLMessage.INFORM) {
-                AddFriendsLeaderToList(messageFromFriends);
-                SendMessageToFriendsLeader(messageFromFriends);
-            }
-        }
-        else if (messageFromFriends != null && inGroup) {
-            RefuseOffer(messageFromFriends);
-            //TODO : quitter le groupe si jamais pas d'amis dans le groupe actuel (ou si plus d'amis dans l'autre groupe)
-        }
-        else {
-            MessageTemplate temp2 = MessageTemplate.MatchReceiver(friendsLeader);
-            ACLMessage messageFromFriendsLeader = myAgent.receive(temp2);
-            
-            if (messageFromFriendsLeader != null && !inGroup) {
-                boolean offerPreferedJob = messageFromFriendsLeader.getPerformative() == ACLMessage.PROPOSE && messageFromFriendsLeader.getContent().equals(("\"" + myAgent.preferedRole.toString() + "\""));
-                boolean answerFromFriendNotPreferedJob = messageFromFriendsLeader.getPerformative() == ACLMessage.PROPOSE && messageFromFriendsLeader.getContent() != ("\"" + myAgent.preferedRole.toString() + "\"" );
-
-                if (offerPreferedJob){//on accepte l offre
-                    AcceptProposal(messageFromFriendsLeader);
-                }
-
-                else if (messageFromFriendsLeader.getPerformative() == ACLMessage.CONFIRM){
-                    inGroup = true;
-                    myAgent.leader = messageFromFriendsLeader.getSender();
-                }
-
-                else if (answerFromFriendNotPreferedJob){
-                    AnswerOfferByAskingAnotherJob(messageFromFriendsLeader);
-                }
-
-                else if (messageFromFriendsLeader.getPerformative() == ACLMessage.INFORM) {
-                    AddFriendsLeaderToList(messageFromFriendsLeader);
-                    SendMessageToFriendsLeader(messageFromFriendsLeader);
-                }
-            }
-            else if (messageFromFriendsLeader != null && inGroup) {
-                RefuseOffer(messageFromFriendsLeader);
-                //TODO : quitter le groupe si jamais pas d'amis dans le groupe actuel (ou si plus d'amis dans l'autre groupe)
+            else if (messageFriendly.getPerformative() == ACLMessage.INFORM) {
+                AddFriendsLeaderToList(messageFriendly);
+                AnswerByAskingPreferedJob(messageFriendly);
             }
             else {
-                //TODO : cas d'un message d'un inconnu
+                System.out.println( "Friendly received unexpected message: " + messageFriendly );
+            }
+        }
+        else if (messageFriendly != null && inGroup) {
+            if (messageFriendly.getPerformative() == ACLMessage.REQUEST) {
+                SendLeaderAID(messageFriendly);
+            }
+            else if (messageFriendly.getPerformative() == ACLMessage.DISCONFIRM) {
+                inGroup = false;
+            }
+            else {
+                RefuseOffer(messageFriendly);
+            }
+        }
+        else {
+            ACLMessage messageFromInconnu = myAgent.receive();
+            
+            if (messageFromInconnu != null && !inGroup) {
+                
+                boolean offerPreferedJob = messageFromInconnu.getPerformative() == ACLMessage.PROPOSE && messageFromInconnu.getContent().equals(("\"" + myAgent.preferedRole.toString() + "\""));
+                boolean offerNotPreferedJob = messageFromInconnu.getPerformative() == ACLMessage.PROPOSE && messageFromInconnu.getContent() != ("\"" + myAgent.preferedRole.toString() + "\"" );
+                
+                if (offerPreferedJob){//on accepte l offre
+                    AcceptProposal(messageFromInconnu, myAgent.preferedRole);
+                }
+
+                else if (offerNotPreferedJob){
+                    RefuseOffer(messageFromInconnu);
+                }
+
+                else if (messageFromInconnu.getPerformative() == ACLMessage.CONFIRM){
+                    inGroup = true;
+                    myAgent.group.leader = messageFromInconnu.getSender();
+                }
+
+                else {
+                    System.out.println( "Friendly received unexpected message: " + messageFriendly );
+                }
+
+            }
+            else if (messageFromInconnu != null && inGroup) {
+                RefuseOffer(messageFromInconnu);
             }
         }
     }
