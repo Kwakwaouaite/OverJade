@@ -40,7 +40,7 @@ public class LeaderAgent extends PlayerAgent {
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("team-leader");
+		sd.setType("party-finding");
 		sd.setName("OverJADE-team-leader");
 		dfd.addServices(sd);
 		try {
