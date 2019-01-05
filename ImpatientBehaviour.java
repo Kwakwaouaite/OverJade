@@ -43,12 +43,14 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
                 potentialLeaders = new AID[result.length];
-                int chosenLeader = (int) Math.round(Math.random() * (result.length - 1));
+                if (result.length > 0) {
+                    int chosenLeader = (int) Math.round(Math.random() * (result.length - 1));
 
-                ACLMessage requestToJoin = new ACLMessage(ACLMessage.REQUEST);
-                requestToJoin.setContent(myAgent.preferedRole.toString());
-                requestToJoin.addReceiver(result[chosenLeader].getName());
-                myAgent.send(requestToJoin);
+                    ACLMessage requestToJoin = new ACLMessage(ACLMessage.REQUEST);
+                    requestToJoin.setContent(myAgent.preferedRole.toString());
+                    requestToJoin.addReceiver(result[chosenLeader].getName());
+                    myAgent.send(requestToJoin);
+                }
             } catch (FIPAException fe) {
                 fe.printStackTrace();
             }
