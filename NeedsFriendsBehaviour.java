@@ -151,12 +151,21 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
                 }
 
                 else {
-                    System.out.println( "Friendly received unexpected message: " + messageFriendly );
+                    System.out.println( "Friendly received unexpected message: " + messageFromInconnu );
                 }
 
             }
             else if (messageFromInconnu != null && inGroup) {
-                RefuseOffer(messageFromInconnu);
+                if (messageFromInconnu.getPerformative() == ACLMessage.REQUEST) {
+                    SendLeaderAID(messageFromInconnu);
+                }
+                else if (messageFromInconnu.getPerformative() == ACLMessage.DISCONFIRM) {
+                    inGroup = false;
+                    AnswerByAskingPreferedJob(messageFromInconnu);
+                }
+                else {
+                    RefuseOffer(messageFromInconnu);
+                }
             }
         }
     }
