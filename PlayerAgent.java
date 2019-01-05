@@ -38,6 +38,8 @@ public class PlayerAgent extends Agent {
 	public Group.Role lastRole;
 	
 	public ArrayList<AID> friends;
+
+	public AID leader;
 	
 	public boolean isActive;
 	
