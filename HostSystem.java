@@ -53,8 +53,8 @@ public class HostSystem
     // Instance variables
     //////////////////////////////////
     protected JFrame m_frame = null;
-    protected Vector<AgentController> m_guestList = new Vector();    // invite
-    protected Vector m_guestListAID = new Vector();
+    protected Vector<AgentController> m_guestList = new Vector<AgentController>();    // invite
+    protected Vector<AID> m_guestListAID = new Vector<AID>();
     protected Map<AgentController, Boolean> m_guestListAgent = new HashMap<AgentController, Boolean>();
     protected int m_guestCount = 0;                 // arrivals
     protected int m_personInGroup = 0;
@@ -121,10 +121,10 @@ public class HostSystem
                                 ACLMessage msg = receive();
 
                                 if (msg != null) {
-                                    if (HELLO.equals( msg.getContent() )) {		//Un nouveau agent activé
+                                    if (HELLO.equals( msg.getContent() )) {		//Un nouveau agent activ?
                                         // a guest has arrived
                                     	m_personConnected++;
-                                        System.out.println( "Une nouvelle personne est connectée" );  
+                                        System.out.println( "Une nouvelle personne est connect?" );  
                                         SwingUtilities.invokeLater( new Runnable() {
                                             public void run() {
                                                 ((HostSystemUI) m_frame).lbl_numIntroductions.setText(Integer.toString(m_personConnected));
@@ -157,7 +157,7 @@ public class HostSystem
                                     else if (JOINGROUP.equals( msg.getContent() )){
                                     	// a guest has leave
                                     	m_personInGroup--;
-                                        System.out.println( "Un agent a quitté un groupe" );   
+                                        System.out.println( "Un agent a quitt?un groupe" );   
                                         SwingUtilities.invokeLater( new Runnable() {
                                             public void run() {
                                                 ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected));
@@ -313,7 +313,7 @@ public class HostSystem
     	try {
     		
         while(!m_partyOver) {
-        	//sélection du nb de gens à inviter en même temps 
+        	//s?ection du nb de gens ?inviter en m?e temps 
         	
         	int nombre = rnd.nextInt(20) + 10;
         	

@@ -113,8 +113,8 @@ public class HostSystemUI
         lbl_guestCount.setPreferredSize(new Dimension(30, 17));
         lbl_guestCount.setText("100");
         slide_numGuests.setValue(100);
-        slide_numGuests.setMinimum(200);
-        slide_numGuests.setMaximum(2000);
+        slide_numGuests.setMinimum(20);
+        slide_numGuests.setMaximum(1000);
         slide_numGuests.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 slide_numGuests_stateChanged(e);
