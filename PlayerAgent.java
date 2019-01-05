@@ -39,13 +39,15 @@ public class PlayerAgent extends Agent {
 	
 	public ArrayList<AID> friends;
 
-	public Group group;
+	public AID leader;
+	public AID hostAgent;
 	
 	public boolean isActive;
 	
 	public int impatienceRate;
 	
 	protected void setup() {
+		friends = new ArrayList<AID>();
 	}
 	
 }

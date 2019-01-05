@@ -10,6 +10,7 @@ public class NeedsFriendsAgent extends PlayerAgent {
 	
 	
 	protected void setup() {
+        super.setup();
 		// TODO : créer un méthode dans Player Agent qui reprend cet partie du code
 		// définition des preferences
 		double rand = Math.random();

@@ -1,6 +1,7 @@
 package OverJADE;
 
 import jade.core.AID;
+import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
 import jade.domain.DFService;
@@ -72,6 +73,12 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             else if (incomingMsg.getPerformative() == ACLMessage.CONFIRM){
                 inParty = true;
                 myLeader = incomingMsg.getSender();
+
+                ACLMessage msgToHost = new ACLMessage(ACLMessage.INFORM);
+                msgToHost.setContent("JOINGROUP");
+                msgToHost.addReceiver(myAgent.hostAgent);
+                myAgent.send(msgToHost);
+
                 System.out.println( "Impatient " + getAgent().getName().toString() + "received COMFIRM " + incomingMsg);
             }
 
@@ -84,16 +91,27 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             }
 
         }
+        //Si on est deja dans un groupe
         else if (incomingMsg != null && inParty) {
             if (incomingMsg.getPerformative() == ACLMessage.PROPOSE) {
                 RejectProposal(incomingMsg);
 
             }
             else if (incomingMsg.getPerformative() == ACLMessage.REQUEST) {
-                ACLMessage answer = incomingMsg.createReply();
                 if (myLeader != null) {
+                    ACLMessage answer = incomingMsg.createReply();
                     answer.setContent(myLeader.AGENT_CLASSNAME);
+                    myAgent.send(answer);
                 }
+            }
+            else if (incomingMsg.getPerformative() == ACLMessage.INFORM &&
+            incomingMsg.getContent().equals("GOODBYE")) { //grp complet
+                ACLMessage msgToHost = new ACLMessage(ACLMessage.INFORM);
+                msgToHost.setContent("GOODBYE");
+                msgToHost.addReceiver(myAgent.hostAgent);
+                myAgent.send(msgToHost);
+
+
             }
         }
     }
