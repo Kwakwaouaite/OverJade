@@ -50,29 +50,22 @@ public class NeedsFriendsAgent extends PlayerAgent {
                 lastRole = Group.Role.DPS;
             }
         }
+        
 
-        // dÃ©finition de la liste d'amis
-        AMSAgentDescription [] agents = null;
-        try {
-            SearchConstraints c = new SearchConstraints();
-            long random_int = (long)((Math.random() * 10) + 1);
-            c.setMaxResults (random_int);
-            agents = AMSService.search( this, new AMSAgentDescription (), c );
-        }
-        catch (Exception e) {
-            System.out.println( "Problem searching AMS: " + e );
-            e.printStackTrace();
-        }
+     // définition de la liste d'amis                    
+        long nbFriends = (long)((Math.random() * 10) + 1);
         AID myID = getAID();
-        for (int i=0; i<agents.length;i++)
+        
+        for (int ii=0; ii<nbFriends;ii++)
         {
-        	AID agentID = agents[i].getName();
+        	int j =((int) Math.random() * nGuests) + 1;
+        	String lName = "guest_"+ j ;
+        	AID agentID = new AID(lName, AID.ISLOCALNAME);
+        	
         	if (!(agentID.equals( myID ))) {
           	  	friends.add(agentID);
         	}
         }
-
-
 
 		addBehaviour( new NeedsFriendsBehaviour(this));
 	}

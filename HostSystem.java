@@ -229,29 +229,23 @@ public class HostSystem
 
                 if(nombre == 0) {
                     //crÃ©ation de l'agent Impatient
-                    ImpatientAgent guest = container.createNewAgent(localName, "OverJADE.ImpatientAgent", null);
+                    AgentController guest = container.createNewAgent(localName, "OverJADE.ImpatientAgent", null);
+                    m_guestList.add(guest);
+                    m_guestListAgent.put(guest, false);
+                    m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else if (nombre == 1) {
-                	LeaderAgent guest = container.createNewAgent(localName, "OverJADE.LeaderAgent", null);
+                	AgentController guest = container.createNewAgent(localName, "OverJADE.LeaderAgent", null);
+                	m_guestList.add(guest);
+                    m_guestListAgent.put(guest, false);
+                    m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else {
-                	NeedsFriendsAgent guest = container.createNewAgent(localName, "OverJADE.NeedsFriendsAgent", null);
-                
-                	 // définition de la liste d'amis                    
-                    long nbFriends = (long)((Math.random() * 10) + 1);
-
-                    for (int i=0; i<nbFriends;i++)
-                    {
-                    	int j =(Math.random() * nGuests) + 1;
-                    	String lName = "guest_"+ j ;
-                    	
-                    	if (!(localName.equals(lName))) {
-                      	  	guest.friends.add(new AID(lName, AID.ISLOCALNAME));
-                    	}
-                    }
+                	AgentController guest = container.createNewAgent(localName, "OverJADE.NeedsFriendsAgent", null);
+                	m_guestList.add(guest);
+                    m_guestListAgent.put(guest, false);
+                    m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 }
                        // keep the guest's ID on a local list
-                m_guestList.add(guest);
-                m_guestListAgent.put(guest, false);
-                m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
+                
                 }
             
 
