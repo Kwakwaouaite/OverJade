@@ -46,6 +46,7 @@ public class PlayerAgent extends Agent {
 	public int impatienceRate;
 	
 	protected void setup() {
+		friends = new ArrayList<AID>();
 	}
 	
 }

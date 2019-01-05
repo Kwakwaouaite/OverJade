@@ -25,10 +25,11 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
     public Group myGroup; 
 
     public NeedsFriendsBehaviour(PlayerAgent agent) {
-        friendsLeader = new AID[myAgent.friends.size()];
-        myfriends = new AID[myAgent.friends.size()];
 
         myAgent = agent;
+
+        friendsLeader = new AID[myAgent.friends.size()];
+        myfriends = new AID[myAgent.friends.size()];
 
         for (int i = 0; i < myAgent.friends.size(); ++i) {
             myfriends[i] = myAgent.friends.get(i);
