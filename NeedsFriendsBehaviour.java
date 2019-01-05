@@ -22,7 +22,7 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
     public AID[] friendsLeader;
 
 	public boolean inGroup;
-    public Group myGroup; 
+    public AID myLeader; 
 
     public NeedsFriendsBehaviour(PlayerAgent agent) {
 
@@ -33,6 +33,10 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
 
         for (int i = 0; i < myAgent.friends.size(); ++i) {
             myfriends[i] = myAgent.friends.get(i);
+        }
+
+        for (int i = 0; i < friendsLeader.length; ++i) {
+            friendsLeader[i] = new AID();
         }
     }
 
@@ -45,7 +49,7 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
     
     public void SendLeaderAID(ACLMessage message) {
         ACLMessage answer = message.createReply();
-        answer.addReplyTo(myAgent.group.leader);
+        answer.addReplyTo(myLeader);
         answer.setPerformative(ACLMessage.INFORM);
         answer.setContent("You'll reply to my leader");
         myAgent.send(answer);       
@@ -94,7 +98,7 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
 
         MessageTemplate temp = MessageTemplate.MatchReceiver(myfriends);
         MessageTemplate temp2 = MessageTemplate.MatchReceiver(friendsLeader);
-        
+
         MessageTemplate tempFinal = MessageTemplate.or(temp, temp2);
 
         //reception of messages
@@ -107,7 +111,7 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
             }
 
             else if (messageFriendly.getPerformative() == ACLMessage.CONFIRM) {
-                myAgent.group.leader = messageFriendly.getSender();
+                myLeader = messageFriendly.getSender();
             }
 
             else if (messageFriendly.getPerformative() == ACLMessage.INFORM) {
@@ -148,10 +152,15 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
 
                 else if (messageFromInconnu.getPerformative() == ACLMessage.CONFIRM){
                     inGroup = true;
-                    myAgent.group.leader = messageFromInconnu.getSender();
+                    myLeader = messageFromInconnu.getSender();
+                }
+
+                else if (messageFromInconnu.getPerformative() == ACLMessage.FAILURE){
                 }
 
                 else {
+
+
                     System.out.println( "Friendly received unexpected message: " + messageFromInconnu );
                 }
 
