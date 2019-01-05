@@ -123,6 +123,7 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
             }
             else if (messageFriendly.getPerformative() == ACLMessage.DISCONFIRM) {
                 inGroup = false;
+                AnswerByAskingPreferedJob(messageFriendly);
             }
             else {
                 RefuseOffer(messageFriendly);
