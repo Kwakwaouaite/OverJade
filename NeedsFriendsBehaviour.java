@@ -177,6 +177,9 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
                     RefuseOffer(messageFromInconnu);
                 }
             }
+            else {
+                block();
+            }
         }
     }
 }

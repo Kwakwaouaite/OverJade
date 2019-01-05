@@ -116,6 +116,9 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
 
             }
         }
+        else {
+            block();
+        }
     }
 
 	/*
