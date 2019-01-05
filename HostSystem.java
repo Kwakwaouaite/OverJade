@@ -229,17 +229,17 @@ public class HostSystem
 
                 if(nombre == 0) {
                     //création de l'agent Impatient
-                    AgentController guest = container.createNewAgent(localName, "OverJADE.ImpatientAgent", null);
+                    AgentController guest = container.createNewAgent("Impatient-" + localName, "OverJADE.ImpatientAgent", null);
                     m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else if (nombre == 1) {
-                	AgentController guest = container.createNewAgent(localName, "OverJADE.LeaderAgent", null);
+                	AgentController guest = container.createNewAgent("Leader-" + localName, "OverJADE.LeaderAgent", null);
                 	m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else {
-                	AgentController guest = container.createNewAgent(localName, "OverJADE.NeedsFriendsAgent", null);
+                	AgentController guest = container.createNewAgent("Friend-" + localName, "OverJADE.NeedsFriendsAgent", null);
                 	m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
@@ -320,7 +320,7 @@ public class HostSystem
         	for(int i = 0; i < nombre; i++) {
         		
         		index ++;
-        		if(index > m_guestCount) index = 0;
+        		if(index > m_guestCount - 1) index = 0;
         		
         		AgentController guest = m_guestList.get(index);
         		
