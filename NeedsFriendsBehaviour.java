@@ -154,8 +154,8 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
                     inGroup = true;
                     myLeader = messageFromInconnu.getSender();
                 }
-
-                else if (messageFromInconnu.getPerformative() == ACLMessage.FAILURE){
+                else if (messageFromInconnu.getPerformative() == ACLMessage.REQUEST){
+                    // Malheureusement on a pas de groupe
                 }
 
                 else {
