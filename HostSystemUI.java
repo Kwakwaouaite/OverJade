@@ -1,6 +1,6 @@
 // Package
 ///////////////
-package examples.alice;
+package OverJADE;
 
 
 // Imports

@@ -1,6 +1,6 @@
 // Package
 ///////////////
-package examples.alice;
+package OverJADE;
 
 // Imports
 ///////////////
@@ -54,6 +54,7 @@ public class HostSystem
     //////////////////////////////////
     protected JFrame m_frame = null;
     protected Vector<AgentController> m_guestList = new Vector();    // invite
+    protected Vector m_guestListAID = new Vector();
     protected Map<AgentController, Boolean> m_guestListAgent = new HashMap<AgentController, Boolean>();
     protected int m_guestCount = 0;                 // arrivals
     protected int m_personInGroup = 0;
@@ -227,17 +228,35 @@ public class HostSystem
                 int nombre = rnd.nextInt(3);        // création des differents caractères
 
                 if(nombre == 0) {
-                    //création de l'agent
-                    AgentController guest = container.createNewAgent(localName, "examples.party.GuestAgent", null);
+                    //création de l'agent Impatient
+                    ImpatientAgent guest = container.createNewAgent(localName, "OverJADE.ImpatientAgent", null);
+                } else if (nombre == 1) {
+                	LeaderAgent guest = container.createNewAgent(localName, "OverJADE.LeaderAgent", null);
+                } else {
+                	NeedsFriendsAgent guest = container.createNewAgent(localName, "OverJADE.NeedsFriendsAgent", null);
                 
+                	 // d�finition de la liste d'amis                    
+                    long nbFriends = (long)((Math.random() * 10) + 1);
+
+                    for (int i=0; i<nbFriends;i++)
+                    {
+                    	int j =(Math.random() * nGuests) + 1;
+                    	String lName = "guest_"+ j ;
+                    	
+                    	if (!(localName.equals(lName))) {
+                      	  	guest.friends.add(new AID(lName, AID.ISLOCALNAME));
+                    	}
+                    }
+                }
                        // keep the guest's ID on a local list
                 m_guestList.add(guest);
                 m_guestListAgent.put(guest, false);
+                m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 }
-            }
+            
 
             updateSystem();
-        }
+        	}
         catch (Exception e) {
             System.err.println( "Exception while adding guests: " + e );
             e.printStackTrace();
@@ -324,6 +343,7 @@ public class HostSystem
         	TimeUnit.SECONDS.sleep(timeCreationNewAgents);
         	
         }
+          
 
         endParty();
 			
@@ -336,6 +356,9 @@ public class HostSystem
 		}
 
     }
+    
+    
+    
 }
 
 
