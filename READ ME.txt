@@ -1,0 +1,2 @@
+Pour executer le projet, lancer l'agent HostSystem sur JADE.
+Une UI va s'ouvrir, définissez le nombre de joueurs que vous souhaitez lancer et appuyer sur start pour lancer le jeu.
