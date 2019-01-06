@@ -126,7 +126,7 @@ public class HostSystem
 
                                 if (msg != null) {
                                     if (HELLO.equals( msg.getContent() )) {		//Un nouveau agent activ?
-                                        // a guest has arrived
+                                        // a player has arrived
                                     	m_personConnected++;
                                         System.out.println( "Une nouvelle personne est connect?" );  
                                         SwingUtilities.invokeLater( new Runnable() {
@@ -137,7 +137,7 @@ public class HostSystem
                                     }
                                     
                                     else if (GOODBYE.equals( msg.getContent() )){
-                                    	// a guest has leave
+                                    	// a player has leave
                                     	m_personConnected--;
                                         System.out.println( "Un agent est partis dans un groupe" ); 
                                         SwingUtilities.invokeLater( new Runnable() {
@@ -148,7 +148,7 @@ public class HostSystem
                                 	} 
                                     
                                     else if (JOINGROUP.equals( msg.getContent() )){
-                                    	// a guest has leave
+                                    	// a player has join a group
                                     	m_personInGroup++;
                                         System.out.println( "Un agent a rejoint un groupe" ); 
                                         SwingUtilities.invokeLater( new Runnable() {
@@ -159,7 +159,7 @@ public class HostSystem
                                     }
                                     
                                     else if (JOINGROUP.equals( msg.getContent() )){
-                                    	// a guest has leave
+                                    	// a player has leave a group
                                     	m_personInGroup--;
                                         System.out.println( "Un agent a quitt?un groupe" );   
                                         SwingUtilities.invokeLater( new Runnable() {
@@ -233,26 +233,21 @@ public class HostSystem
 
                 if(nombre <= 40) {
                     //création de l'agent Impatient
-                    //AgentController guest = container.createNewAgent("Impatient-" + localName, "OverJADE.ImpatientAgent", null);
                     AgentController guest = container.createNewAgent(localName, "OverJADE.ImpatientAgent", null);
                     m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else if (nombre <= 80) {
-                	//AgentController guest = container.createNewAgent("Leader-" + localName, "OverJADE.LeaderAgent", null);
                     AgentController guest = container.createNewAgent(localName, "OverJADE.LeaderAgent", null);
                 	m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else {
-                	//AgentController guest = container.createNewAgent("Friend-" + localName, "OverJADE.NeedsFriendsAgent", null);
                     AgentController guest = container.createNewAgent(localName, "OverJADE.NeedsFriendsAgent", null);
                 	m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
-                }
-                       // keep the guest's ID on a local list
-                
+                }                
                 }
             
 
