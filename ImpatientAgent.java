@@ -3,6 +3,7 @@ package OverJADE;
 public class ImpatientAgent extends PlayerAgent{
 
     protected void setup() {
+        super.setup();
         double rand = Math.random();
         if (rand < 0.7) {
             preferedRole = Group.Role.DPS;

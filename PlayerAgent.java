@@ -26,6 +26,19 @@ package OverJADE;
 import jade.core.Agent;
 import java.util.ArrayList;
 
+import jade.lang.acl.ACLMessage;
+
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+
+/*
+import HostSystem.HELLO;
+import HostSystem.GOODBYE;
+import HostSystem.JOINGROUP;
+import HostSystem.LEAVEGROUP;
+*/
 import jade.core.AID;
 
 public class PlayerAgent extends Agent {
@@ -48,6 +61,28 @@ public class PlayerAgent extends Agent {
 	
 	protected void setup() {
 		friends = new ArrayList<AID>();
+
+		DFAgentDescription template = new DFAgentDescription();
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("managing");
+        template.addServices(sd);
+
+		try {
+	            DFAgentDescription[] result = DFService.search(this, template);
+	            if (result.length > 0) {
+	                hostAgent = result[0].getName();
+	            }
+	        } catch (FIPAException fe) {
+	            fe.printStackTrace();
+	        }
+
+	    ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setContent(HostSystem.HELLO);
+        msg.addReceiver(hostAgent);
+        send(msg);
 	}
 	
+	public void letsgo() {
+
+	}
 }

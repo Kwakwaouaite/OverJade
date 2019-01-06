@@ -109,6 +109,10 @@ public class HostSystem
             // create the agent descrption of itself
             DFAgentDescription dfd = new DFAgentDescription();
             dfd.setName( getAID() );
+            ServiceDescription sd = new ServiceDescription();
+            sd.setType("managing");
+            sd.setName("Host");
+            dfd.addServices(sd);
             DFService.register( this, dfd );
 
             // add the GUI

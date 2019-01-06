@@ -37,6 +37,7 @@ public class LeaderAgent extends PlayerAgent {
 	
 	
 	protected void setup() {
+		super.setup();
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
