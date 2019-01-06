@@ -22,6 +22,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         myAgent = agent;
     }
 
+    //fonction qui refuse l'offre proposee dans le message
     void RejectProposal(ACLMessage msg) {
         ACLMessage refuseOffer = msg.createReply();
         refuseOffer.setPerformative(ACLMessage.REJECT_PROPOSAL);
@@ -38,7 +39,8 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         ServiceDescription sd = new ServiceDescription();
         sd.setType("party-finding");
         template.addServices(sd);
-
+        //recherche dans les pages jaunes des leaders, et envoi d'un message à l'un d'entre eux, pour de mander à rejoindre
+        //son groupe, uniquement si on en a pas deja un
         if (!inParty) {
             try {
                 DFAgentDescription[] result = DFService.search(myAgent, template);
@@ -56,8 +58,12 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             }
         }
 
+        //phase de reponse aux messages recus
         ACLMessage incomingMsg = myAgent.receive();
+
+        //cas ou l'on est pas dans un groupe
         if (incomingMsg != null && !inParty) {
+            //si c est une proposition du role que l on veut, on accepte l offre
             if (incomingMsg.getPerformative() == ACLMessage.PROPOSE &&
             incomingMsg.getContent().equals(myAgent.preferedRole.toString())){//on accepte l offre
                 ACLMessage acceptOffer = incomingMsg.createReply();
@@ -66,12 +72,12 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
                 myAgent.send(acceptOffer);
                 //System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + incomingMsg + " and accept");
             }
-
+            //si c est une proposition d'un autre role, on refuse
             else if (incomingMsg.getPerformative() == ACLMessage.PROPOSE &&
                     !incomingMsg.getContent().equals(myAgent.preferedRole.toString())){
                 RejectProposal(incomingMsg);
             }
-
+            //si on nous confirme la presence dans un groupe, on se considere comme etant dans ce groupe, et on enregistre le leader
             else if (incomingMsg.getPerformative() == ACLMessage.CONFIRM){
                 inParty = true;
                 myLeader = incomingMsg.getSender();
@@ -83,11 +89,12 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
 
                 //System.out.println( "Impatient " + getAgent().getName().toString() + "received COMFIRM " + incomingMsg);
             }
-
+            //si on nous envoi une requete, on ne repond pas car nous ne sommes pas encore dans un groupe, on ne peut donc pas
+            //indiquer un leader a notre ami
             else if (incomingMsg.getPerformative() == ACLMessage.REQUEST) {
                 // no answer since not in party
             }
-
+            //sinon message non gere
             else {
                 //System.out.println( "Impatient " + getAgent().getName().toString() + "received unexpected message: " + incomingMsg);
             }
@@ -95,10 +102,11 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         }
         //Si on est deja dans un groupe
         else if (incomingMsg != null && inParty) {
+            //si l'on recoit une proposition, on la refuse
             if (incomingMsg.getPerformative() == ACLMessage.PROPOSE) {
                 RejectProposal(incomingMsg);
-
             }
+            //si l'on recoit une request, on envoi a notre ami le nom du leader de notre groupe
             else if (incomingMsg.getPerformative() == ACLMessage.REQUEST) {
                 if (myLeader != null) {
                     ACLMessage answer = incomingMsg.createReply();
@@ -106,6 +114,8 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
                     myAgent.send(answer);
                 }
             }
+
+            //si l'on nous informe que le groupe est complet, on le signale a l'host
             else if (incomingMsg.getPerformative() == ACLMessage.INFORM &&
             incomingMsg.getContent().equals("GOODBYE")) { //grp complet
                 ACLMessage msgToHost = new ACLMessage(ACLMessage.INFORM);
