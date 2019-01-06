@@ -33,12 +33,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 
-/*
-import HostSystem.HELLO;
-import HostSystem.GOODBYE;
-import HostSystem.JOINGROUP;
-import HostSystem.LEAVEGROUP;
-*/
 import jade.core.AID;
 
 public class PlayerAgent extends Agent {
@@ -62,6 +56,7 @@ public class PlayerAgent extends Agent {
 	protected void setup() {
 		friends = new ArrayList<AID>();
 
+		// Register to the DF
 		DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
         sd.setType("managing");
@@ -76,6 +71,7 @@ public class PlayerAgent extends Agent {
 	            fe.printStackTrace();
 	        }
 
+	    // Inform the host that we are connected
 	    ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContent(HostSystem.HELLO);
         msg.addReceiver(hostAgent);

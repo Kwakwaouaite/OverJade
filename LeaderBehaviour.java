@@ -22,14 +22,14 @@ public class LeaderBehaviour extends CyclicBehaviour  {
 		ACLMessage msg = myAgent.receive();
 
         if (msg != null) {
-            if (msg.getPerformative() == ACLMessage.REQUEST) {
+            if (msg.getPerformative() == ACLMessage.REQUEST) {  // Un joueur veut rejoindre le groupe, on lui propose un poste
                 ACLMessage reply = msg.createReply();
                 reply.setPerformative(ACLMessage.PROPOSE);
                 Group.Role toPropose = myGroup.tryJoinRole(Group.Role.valueOf(msg.getContent()));
                 reply.setContent(toPropose.toString());
                 myAgent.send(reply);
             }
-            else if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+            else if (msg.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){	// Un joueur accepte de rejoindre le groupe avec le poste proposé
 
             	ACLMessage reply = msg.createReply();
 
@@ -46,10 +46,10 @@ public class LeaderBehaviour extends CyclicBehaviour  {
                 myAgent.send(reply);
 
             }
-            else if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL){
+            else if (msg.getPerformative() == ACLMessage.REJECT_PROPOSAL){ // Un agent refuse notre proposition
 
             }
-            else if (msg.getPerformative() == ACLMessage.INFORM && msg.getContent().equals("QUIT")) {
+            else if (msg.getPerformative() == ACLMessage.INFORM && msg.getContent().equals("QUIT")) { // Un agent demande de quiter le groupe
             	myGroup.leave(msg.getSender());
             	System.out.println(msg.getSender() + " is quitting");
             }

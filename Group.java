@@ -28,6 +28,7 @@ public class Group {
 		this.leader = leaderAID;
 	}
 
+	// Regarde si le rôle est disponnible, sinon en propose un autre
 	public Role tryJoinRole(Role roleWanted){
 		if (roleWanted != null) {
 			switch (roleWanted){
@@ -50,6 +51,7 @@ public class Group {
 		return null;
 	}
 
+	// Est ce qu'on a besoin d'un healer ?
 	boolean isHealerNeeded(){
 		if (firstHealer != null && secondHealer != null){
 			return false;
@@ -57,6 +59,7 @@ public class Group {
 		return true;
 	}
 
+	// Est ce qu'on a besoin d'un DPS ?
 	boolean isDPSNeeded(){
 		if (firstDPS != null && secondDPS != null){
 			return false;
@@ -64,6 +67,7 @@ public class Group {
 		return true;
 	}
 
+	// Est ce qu'on a besoin d'un Tank ?
 	boolean isTankNeeded(){
 		if (firstTank != null && secondTank != null){
 			return false;
@@ -117,7 +121,7 @@ public class Group {
 			return false;
 	}
 
-
+	// Return a role wich is needed
 	Role whatNeeded(){
 		if (isHealerNeeded()){
 			return Role.HEALER;
@@ -131,6 +135,7 @@ public class Group {
 		return null;
 	}
 
+	// Make a player leave the group
 	void leave(AID aidLeaver){
 		if (firstHealer != null && aidLeaver.equals(firstHealer)){
 			firstHealer = null;
@@ -152,6 +157,7 @@ public class Group {
 		}
 	}
 
+	// Check if a player is in the group
 	boolean isIn(AID aidToFind){
 		if (firstHealer != null && aidToFind.equals(firstHealer)){
 			return true;
@@ -174,6 +180,7 @@ public class Group {
 		return false;
 	}
 
+	// Return the size of the group
 	int size() {
 		int s = 0;
 		if (firstHealer != null) s += 1;
