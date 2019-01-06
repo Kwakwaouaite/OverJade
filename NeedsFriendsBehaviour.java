@@ -135,7 +135,7 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
             }
         }
         // si on est dans un groupe
-        else if (messageFriendly != null && inGroup) 
+        else if (messageFriendly != null && inGroup) { 
         	// s'il reçoit une requete et qu'il est déjà dans un groupe, il renvoir l'AID de son leader à son ami
             if (messageFriendly.getPerformative() == ACLMessage.REQUEST) {
                 SendLeaderAID(messageFriendly);
@@ -177,7 +177,6 @@ public class NeedsFriendsBehaviour extends CyclicBehaviour  {
                 else {
                     System.out.println( "Friendly received unexpected message: " + messageFromInconnu );
                 }
-
             }
             // si on est dans un groupe
             else if (messageFromInconnu != null && inGroup) {
