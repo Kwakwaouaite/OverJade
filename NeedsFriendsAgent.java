@@ -58,7 +58,7 @@ public class NeedsFriendsAgent extends PlayerAgent {
         
         for (int ii=0; ii<nbFriends;ii++)
         {
-        	int j =((int) Math.random() * nGuests) + 1;
+        	int j =((int) Math.random() * (int) nbFriends) + 1;
         	String lName = "guest_"+ j ;
         	AID agentID = new AID(lName, AID.ISLOCALNAME);
         	

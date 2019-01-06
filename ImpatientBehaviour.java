@@ -27,8 +27,8 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
         refuseOffer.setPerformative(ACLMessage.REJECT_PROPOSAL);
         refuseOffer.setContent(myAgent.preferedRole.toString());
         myAgent.send(refuseOffer);
-        System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + msg
-                + " and refuse, expect " + myAgent.preferedRole.toString());
+        //System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + msg
+        //        + " and refuse, expect " + myAgent.preferedRole.toString());
     }
 
     public void action() {
@@ -64,7 +64,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
                 acceptOffer.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 acceptOffer.setContent (myAgent.preferedRole.toString());
                 myAgent.send(acceptOffer);
-                System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + incomingMsg + " and accept");
+                //System.out.println( "Impatient " + getAgent().getName().toString() + "received PROPOSE " + incomingMsg + " and accept");
             }
 
             else if (incomingMsg.getPerformative() == ACLMessage.PROPOSE &&
@@ -81,7 +81,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
                 msgToHost.addReceiver(myAgent.hostAgent);
                 myAgent.send(msgToHost);
 
-                System.out.println( "Impatient " + getAgent().getName().toString() + "received COMFIRM " + incomingMsg);
+                //System.out.println( "Impatient " + getAgent().getName().toString() + "received COMFIRM " + incomingMsg);
             }
 
             else if (incomingMsg.getPerformative() == ACLMessage.REQUEST) {
@@ -89,7 +89,7 @@ public class ImpatientBehaviour extends CyclicBehaviour  {
             }
 
             else {
-                System.out.println( "Impatient " + getAgent().getName().toString() + "received unexpected message: " + incomingMsg);
+                //System.out.println( "Impatient " + getAgent().getName().toString() + "received unexpected message: " + incomingMsg);
             }
 
         }

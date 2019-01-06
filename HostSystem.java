@@ -149,7 +149,7 @@ public class HostSystem
                                         System.out.println( "Un agent a rejoint un groupe" ); 
                                         SwingUtilities.invokeLater( new Runnable() {
                                             public void run() {
-                                                ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected));
+                                                ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected - m_personInGroup));
                                             }
                                         } );
                                     }
@@ -160,7 +160,7 @@ public class HostSystem
                                         System.out.println( "Un agent a quitt?un groupe" );   
                                         SwingUtilities.invokeLater( new Runnable() {
                                             public void run() {
-                                                ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected));
+                                                ((HostSystemUI) m_frame).lbl_rumourAvg.setText(Integer.toString(m_personConnected - m_personInGroup));
                                             }
                                         } );
                                     }
@@ -225,21 +225,24 @@ public class HostSystem
                 // create a new agent
                 String localName = "guest_"+i;
 
-                int nombre = rnd.nextInt(3);        // création des differents caractères
+                int nombre = rnd.nextInt(100);        // création des differents caractères
 
-                if(nombre == 0) {
+                if(nombre <= 40) {
                     //création de l'agent Impatient
-                    AgentController guest = container.createNewAgent("Impatient-" + localName, "OverJADE.ImpatientAgent", null);
+                    //AgentController guest = container.createNewAgent("Impatient-" + localName, "OverJADE.ImpatientAgent", null);
+                    AgentController guest = container.createNewAgent(localName, "OverJADE.ImpatientAgent", null);
                     m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
-                } else if (nombre == 1) {
-                	AgentController guest = container.createNewAgent("Leader-" + localName, "OverJADE.LeaderAgent", null);
+                } else if (nombre <= 80) {
+                	//AgentController guest = container.createNewAgent("Leader-" + localName, "OverJADE.LeaderAgent", null);
+                    AgentController guest = container.createNewAgent(localName, "OverJADE.LeaderAgent", null);
                 	m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );
                 } else {
-                	AgentController guest = container.createNewAgent("Friend-" + localName, "OverJADE.NeedsFriendsAgent", null);
+                	//AgentController guest = container.createNewAgent("Friend-" + localName, "OverJADE.NeedsFriendsAgent", null);
+                    AgentController guest = container.createNewAgent(localName, "OverJADE.NeedsFriendsAgent", null);
                 	m_guestList.add(guest);
                     m_guestListAgent.put(guest, false);
                     m_guestListAID.add( new AID(localName, AID.ISLOCALNAME) );

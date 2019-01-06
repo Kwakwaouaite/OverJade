@@ -151,4 +151,15 @@ public class Group {
 			secondTank = null;
 		}
 	}
+
+	int size() {
+		int s = 0;
+		if (firstHealer != null) s += 1;
+		if (secondHealer != null) s += 1;
+		if (firstDPS != null) s += 1;
+		if (secondDPS != null) s += 1;
+		if (firstTank != null) s += 1;
+		if (secondTank != null) s += 1;
+		return s;
+	}
 }

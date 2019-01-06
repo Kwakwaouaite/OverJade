@@ -34,6 +34,10 @@ public class LeaderBehaviour extends CyclicBehaviour  {
 
             	if (myGroup.addPlayer(msg.getSender(), Group.Role.valueOf(msg.getContent()))) {
             		reply.setPerformative(ACLMessage.CONFIRM);
+            		System.out.println(myAgent.getName() + ": Accepting new people ! wouhou ! We are " + myGroup.size());
+            		if (myGroup.size() == 5){
+            			System.out.println("We are full, let's go !");
+            		}
             	} else {
             		reply.setPerformative(ACLMessage.DISCONFIRM);
             	}
