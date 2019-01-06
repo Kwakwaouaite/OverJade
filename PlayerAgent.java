@@ -82,7 +82,17 @@ public class PlayerAgent extends Agent {
         send(msg);
 	}
 	
-	public void letsgo() {
+	public void letsgo() { // To call when the group is complete and the player leave
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setContent(HostSystem.GOODBYE);
+        msg.addReceiver(hostAgent);
+        send(msg);
+	}
 
+	public void joiningGroup() { // To call when the group is complete and the player leave
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setContent(HostSystem.JOINGROUP);
+        msg.addReceiver(hostAgent);
+        send(msg);
 	}
 }

@@ -15,6 +15,7 @@ public class LeaderBehaviour extends CyclicBehaviour  {
 	public LeaderBehaviour (PlayerAgent agent){
 		myAgent = agent;
 		myGroup = new Group(myAgent.getAID());
+		myAgent.joiningGroup();
 	}
 
 	public void action() {
@@ -32,11 +33,12 @@ public class LeaderBehaviour extends CyclicBehaviour  {
 
             	ACLMessage reply = msg.createReply();
 
-            	if (myGroup.addPlayer(msg.getSender(), Group.Role.valueOf(msg.getContent()))) {
+            	if (!(myGroup.isIn(msg.getSender())) && myGroup.addPlayer(msg.getSender(), Group.Role.valueOf(msg.getContent()))) {
             		reply.setPerformative(ACLMessage.CONFIRM);
             		System.out.println(myAgent.getName() + ": Accepting new people ! wouhou ! We are " + myGroup.size());
             		if (myGroup.size() == 5){
             			System.out.println("We are full, let's go !");
+            			myAgent.letsgo();
             		}
             	} else {
             		reply.setPerformative(ACLMessage.DISCONFIRM);

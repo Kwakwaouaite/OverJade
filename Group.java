@@ -152,6 +152,28 @@ public class Group {
 		}
 	}
 
+	boolean isIn(AID aidToFind){
+		if (firstHealer != null && aidToFind.equals(firstHealer)){
+			return true;
+		}
+		else if (secondHealer != null && aidToFind.equals(secondHealer)){
+			return true;
+		}
+		else if (firstDPS != null && aidToFind.equals(firstDPS)){
+			return true;
+		}
+		else if (secondDPS != null && aidToFind.equals(secondDPS)){
+			return true;
+		}
+		else if (firstTank != null && aidToFind.equals(firstTank)){
+			return true;
+		}
+		else if (secondTank != null && aidToFind.equals(secondTank)){
+			return true;
+		}
+		return false;
+	}
+
 	int size() {
 		int s = 0;
 		if (firstHealer != null) s += 1;
